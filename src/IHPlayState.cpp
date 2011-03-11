@@ -23,7 +23,7 @@ namespace IH
 	void PlayState::update(Real delta)
 	{
 		if(mInput->isKeyDown("KC_ESCAPE"))
-			sendMessage(MessageAny<String>("kill"),"Engine");
+			sendMessage(String("kill"),"Engine");
 		if(mInput->wasKeyPressed("KC_HOME"))
 			mInput->toggleMouseGrab();
 	}

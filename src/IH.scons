@@ -1,9 +1,10 @@
 import os
+source = ['IH.cpp','IHMenuState.cpp','IHPlayState.cpp','IHGenerator.cpp']
 if os.name == 'nt':
 	env = Environment(ENV=os.environ,tools=['mingw','g++'],CXX=['g++'],CPPDEFINES=['WIN32'])
 	env['ENV']['LD_RUN_PATH']='.'
-	env.Program('IslandHopping',['IH.cpp','IHRand.cpp','IHMenuState.cpp','IHPlayState.cpp'],CPPPATH=['../src'],LIBS=['OryxEngine','OgreSubsystem','OISSubsystem','BulletSubsystem'])
+	env.Program('IslandHopping',source,CPPPATH=['../src'],LIBS=['OryxEngine','OgreSubsystem','OISSubsystem','BulletSubsystem'])
 else:
 	env = Environment();
 	env['ENV']['LD_RUN_PATH']='.'
-	env.Program('IslandHopping',['IH.cpp','IHRand.cpp','IHMenuState.cpp','IHPlayState.cpp'],CPPPATH=['../../OryxEngine/src'],LIBS=['OryxEngine','ALSubsystem','OgreSubsystem','ChaiscriptSubsystem','OISSubsystem','ENetSubsystem','BulletSubsystem'])
+	env.Program('IslandHopping',source,CPPPATH=['../../OryxEngine/src'],LIBS=['OryxEngine','ALSubsystem','OgreSubsystem','ChaiscriptSubsystem','OISSubsystem','ENetSubsystem','BulletSubsystem'])

@@ -1,5 +1,4 @@
 #include "IH.h"
-#include "IHRand.h"
 #include "IHMenuState.h"
 
 int main(int argc, char** argv)
