@@ -11,19 +11,21 @@ namespace IH
 	{
 		mGfx = dynamic_cast<OgreSubsystem*>(mEngine->getSubsystem("OgreSubsystem"));
 		mAudio = dynamic_cast<ALSubsystem*>(mEngine->getSubsystem("ALSubsystem"));
-		mScript = dynamic_cast<ChaiscriptSubsystem*>(mEngine->getSubsystem("ChaiscriptSubsystem"));
 		mInput = dynamic_cast<OISSubsystem*>(mEngine->getSubsystem("OISSubsystem"));
-		mPhys = dynamic_cast<BulletSubsystem*>(mEngine->getSubsystem("BulletSubsystem"));
-		mInput->initInput(mGfx->getWindowHandle(), false);
+		mInput->initInput(mGfx->getWindowHandle(), true);
 
-		mGfx->setBackgroundColor(Colour(1.f,1.f,1.f));
+		mCamera = new FPSCamera();
+
+		mGfx->setBackgroundColor(Colour(0.2f,0.2f,0.2f));
+		mIslandTypes.push_back(new IslandSchematic());
+		mIslands.push_back(new Island(mIslandTypes.back(),Vector3(0,-2,-7)));
 	}
 	//-----------------------------------------------------------------------
 	
 	void PlayState::update(Real delta)
 	{
-		if(mInput->isKeyDown("KC_ESCAPE"))
-			sendMessage(String("kill"),"Engine");
+		if(mInput->wasKeyPressed("KC_ESCAPE"))
+			sendMessage(MessageAny<String>("kill"),"Engine");
 		if(mInput->wasKeyPressed("KC_HOME"))
 			mInput->toggleMouseGrab();
 	}
@@ -31,7 +33,13 @@ namespace IH
 	
 	void PlayState::deinit()
 	{
+		for(int i=0;i<mIslandTypes.size();++i)
+			delete mIslandTypes[i];
+		mIslandTypes.clear();
 
+		for(int i=0;i<mIslands.size();++i)
+			delete mIslands[i];
+		mIslands.clear();
 	}
 	//-----------------------------------------------------------------------
 }

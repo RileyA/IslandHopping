@@ -7,17 +7,13 @@ int main(int argc, char** argv)
 	TimeManager::getPtr();
 
 	// create subsystems:
-	ChaiscriptSubsystem chaiSys = ChaiscriptSubsystem();
 	ALSubsystem aSys = ALSubsystem();
 	OgreSubsystem ogre = OgreSubsystem(1024,768,false);
 	OISSubsystem ois = OISSubsystem();
-	BulletSubsystem bull = BulletSubsystem();
 
 	// allocate engine and add subsystems
 	Engine* eng = new Engine();
-	eng->addSubsystem(&chaiSys);
 	eng->addSubsystem(&aSys);
-	eng->addSubsystem(&bull);
 	eng->addSubsystem(&ogre);
 	eng->addSubsystem(&ois);
 

@@ -12,11 +12,12 @@ namespace IH
 	{
 		mGfx = dynamic_cast<OgreSubsystem*>(mEngine->getSubsystem("OgreSubsystem"));
 		mAudio = dynamic_cast<ALSubsystem*>(mEngine->getSubsystem("ALSubsystem"));
-		mScript = dynamic_cast<ChaiscriptSubsystem*>(mEngine->getSubsystem("ChaiscriptSubsystem"));
 		mInput = dynamic_cast<OISSubsystem*>(mEngine->getSubsystem("OISSubsystem"));
-		mInput->initInput(mGfx->getWindowHandle(), false);
+		mInput->initInput(mGfx->getWindowHandle(), true);
 
 		// set up menu
+		// TODO: make an xml (or some format) gui format
+		// also long-term TODO: replace Gorilla with a custom solution
 		GUI* gui = mGfx->getGUI();
 		GUIScreen* scrn = mGfx->getGUI()->createScreen(mGfx->getMainViewport(),"TechDemo","Test");
 		scrn->getRootElement(0)->setAspectRatio(4,3);
@@ -45,8 +46,9 @@ namespace IH
 			->addListener(scrn->getSlot("click"));
 		EventHandler::getDestination("OISSubsystem")->getSignal("released_MB_Left")
 			->addListener(scrn->getSlot("release"));
-		createSlot("clickedPlay",this,&MenuState::clickedPlay);
-		rect->getSignal("clicked")->addListener(getSlot("clickedPlay"));
+		
+		rect->getSignal("clicked")->addListener(createSlot("clickedPlay",
+			this,&MenuState::clickedPlay));
 	}
 	//-----------------------------------------------------------------------
 	

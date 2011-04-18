@@ -1,5 +1,5 @@
 import os
-source = ['IH.cpp','IHMenuState.cpp','IHPlayState.cpp','IHGenerator.cpp']
+source = ['IH.cpp','IHMenuState.cpp','IHPlayState.cpp','IHGenerator.cpp','IHIsland.cpp','FPSCamera.cpp']
 if os.name == 'nt':
 	env = Environment(ENV=os.environ,tools=['mingw','g++'],CXX=['g++'],CPPDEFINES=['WIN32'])
 	env['ENV']['LD_RUN_PATH']='.'

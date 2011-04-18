@@ -23,7 +23,6 @@ namespace IH
 		OgreSubsystem* mGfx;
 		OISSubsystem* mInput;
 		ALSubsystem* mAudio;
-		ChaiscriptSubsystem* mScript;
 
 	};
 }

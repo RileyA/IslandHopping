@@ -1,0 +1,29 @@
+material island_frame
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 0.3 0.3 0.3
+			}
+		}
+	}
+}
+
+material island_color
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+			depth_write off
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 1 0 0
+			}
+		}
+	}
+}
