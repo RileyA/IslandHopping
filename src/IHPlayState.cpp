@@ -16,9 +16,12 @@ namespace IH
 
 		mCamera = new FPSCamera();
 
-		mGfx->setBackgroundColor(Colour(0.2f,0.2f,0.2f));
+		mGfx->setBackgroundColor(Colour(0.12f,0.12f,0.12f));
 		mIslandTypes.push_back(new IslandSchematic());
 		mIslands.push_back(new Island(mIslandTypes.back(),Vector3(0,-2,-7)));
+		mIslands.push_back(new Island(mIslandTypes.back(),Vector3(0,-2,-12)));
+		mIslands.push_back(new Island(mIslandTypes.back(),Vector3(0,-2,-17)));
+		mIslands.push_back(new Island(mIslandTypes.back(),Vector3(0,-2,-22)));
 	}
 	//-----------------------------------------------------------------------
 	

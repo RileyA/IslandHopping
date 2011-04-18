@@ -9,6 +9,10 @@ namespace IH
 		mMesh = ogre->createMesh(mSchematic->mesh);
 		mMesh->setPosition(position);
 		mMesh->roll(roll);
+		for(int i=0;i<2;++i)
+			mMesh->setMaterialName(mMesh->getMaterial(i).cloneMe(),i);
+		mMesh->getMaterial(1).setTexture(0,Colour(
+			Rand::get().genFloat(0., 1.f),Rand::get().genFloat(0., 1.f),Rand::get().genFloat(0., 1.f)));
 		ogre->getRootSceneNode()->addChild(mMesh);
 		mActive = true;
 	}
