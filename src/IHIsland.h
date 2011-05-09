@@ -1,3 +1,6 @@
+#ifndef IH_ISLAND_H
+#define IH_ISLAND_H
+
 #include "IH.h"
 
 namespace IH
@@ -38,3 +41,5 @@ namespace IH
 		bool mActive;
 	};
 }
+
+#endif

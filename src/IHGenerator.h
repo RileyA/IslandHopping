@@ -1,3 +1,6 @@
+#ifndef IH_GENERATOR_H
+#define IH_GENERATOR_H
+
 #include "IH.h"
 #include "IHIsland.h"
 #include "IHIslandGrouping.h"
@@ -33,7 +36,14 @@ namespace IH
 	private:
 
 		std::vector<Island*> mIslands;
-		//std::vector<IslandGrouping*> mIslandGroupings;
+
+		// type of individual islands
+		std::vector<IslandSchematic*> mIslandTypes;
+		
+		// types of groups of islands
+		std::vector<IslandGrouping*> mIslandGroupings;
 
 	};
 }
+
+#endif

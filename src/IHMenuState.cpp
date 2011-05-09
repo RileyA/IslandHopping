@@ -13,7 +13,7 @@ namespace IH
 		mGfx = dynamic_cast<OgreSubsystem*>(mEngine->getSubsystem("OgreSubsystem"));
 		mAudio = dynamic_cast<ALSubsystem*>(mEngine->getSubsystem("ALSubsystem"));
 		mInput = dynamic_cast<OISSubsystem*>(mEngine->getSubsystem("OISSubsystem"));
-		mInput->initInput(mGfx->getWindowHandle(), true);
+		mInput->initInput(mGfx->getWindowHandle(), false);
 
 		// set up menu
 		// TODO: make an xml (or some format) gui format

@@ -17,6 +17,9 @@
 // along with Island Hopping. If not, see <http://www.gnu.org/licenses/>
 //---------------------------------------------------------------------------
 
+#ifndef ISLAND_HOPPING_H
+#define ISLAND_HOPPING_H
+
 #define ISLAND_HOPPING_VERSION "0.1.3"
 #include "Oryx.h"
 #include "OryxEngine.h"
@@ -25,3 +28,5 @@
 #include "ENetSubsystem/ENetSubsystem.h"
 #include "OgreSubsystem/OgreSubsystem.h"
 using namespace Oryx;
+
+#endif

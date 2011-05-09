@@ -29,6 +29,8 @@ namespace Oryx
 		:Object(),mPitch(0)
 	{
 		createSlot("look",this,&FPSCamera::look);
+		createSignal("moved");
+
 		EventHandler::getDestination("OISSubsystem")->getSignal("mouseMoved")
 			->addListener(getSlot("look"));
 
@@ -56,9 +58,15 @@ namespace Oryx
 
 	void FPSCamera::update(Real delta)
 	{
-		mPosNode->setPosition(mPosNode->getPosition()
-			+mCamera->getAbsoluteDirection()*20*delta*(mOIS->isKeyDown("KC_W")-mOIS->isKeyDown("KC_S"))
-			+mCamera->getAbsoluteRight()*20*delta*(mOIS->isKeyDown("KC_D")-mOIS->isKeyDown("KC_A")));
+		Vector3 motion = mCamera->getAbsoluteDirection()*20*delta*(mOIS->isKeyDown("KC_W")-mOIS->isKeyDown("KC_S"))
+			+mCamera->getAbsoluteRight()*20*delta*(mOIS->isKeyDown("KC_D")-mOIS->isKeyDown("KC_A"));
+
+		if(motion != Vector3::ZERO)
+		{
+			mPosNode->setPosition(mPosNode->getPosition()+motion);
+			Vector3 pos = getPosition();
+			getSignal("moved")->send(pos);
+		}
 	}
 
 	void FPSCamera::look(const Message& msg)
