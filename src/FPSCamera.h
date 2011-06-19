@@ -39,6 +39,13 @@ namespace Oryx
 		Vector3 getPosition();
 		Vector3 getDirection();
 
+		void lockMotion(){mMotionLocked = true;}
+		void unlockMotion(){mMotionLocked = false;}
+		void lockLook(){mLookLocked = true;}
+		void unlockLook(){mLookLocked = false;}
+
+		void autoMove(const Message& m);
+
 		OgreSubsystem* mOgre;
 		OISSubsystem* mOIS;
 
@@ -49,6 +56,9 @@ namespace Oryx
 		SceneNode* mYawNode;
 		SceneNode* mPitchNode;
 		SceneNode* mPosNode;
+
+		bool mMotionLocked;
+		bool mLookLocked;
 	};
 }
 

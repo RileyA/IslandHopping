@@ -2,6 +2,7 @@
 #define IH_PLAY_STATE_H
 
 #include "IH.h"
+#include "IHPlayer.h"
 #include "OryxGameState.h"
 #include "IHIsland.h"
 #include "FPSCamera.h"
@@ -28,6 +29,10 @@ namespace IH
 		OgreSubsystem* mGfx;
 		OISSubsystem* mInput;
 		ALSubsystem* mAudio;
+		LuaSubsystem* mScript;
+		BulletSubsystem* mBullet;
+
+		IHPlayer* mPlayer;
 
 	};
 }

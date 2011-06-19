@@ -23,6 +23,7 @@ namespace IH
 		virtual void generate(int step);
 
 		void playerMoved(const Message& position);
+		Island* makeIsland(IslandSchematic* type, Vector3 pos, Real roll = 0.f);
 
 	protected:
 
@@ -36,6 +37,7 @@ namespace IH
 	private:
 
 		std::vector<Island*> mIslands;
+		std::vector<Island*> mSpareIslands;
 
 		// type of individual islands
 		std::vector<IslandSchematic*> mIslandTypes;

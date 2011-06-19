@@ -1,5 +1,6 @@
 #include "IH.h"
 #include "IHMenuState.h"
+#include "IHPlayState.h"
 
 int main(int argc, char** argv)
 {
@@ -10,18 +11,24 @@ int main(int argc, char** argv)
 	ALSubsystem aSys = ALSubsystem();
 	OgreSubsystem ogre = OgreSubsystem(1024,768,false);
 	OISSubsystem ois = OISSubsystem();
+	BulletSubsystem bull = BulletSubsystem();
+	LuaSubsystem lua = LuaSubsystem();
+	//ENetSubsystem enet = ENetSubsystem();
 
 	// allocate engine and add subsystems
 	Engine* eng = new Engine();
 	eng->addSubsystem(&aSys);
 	eng->addSubsystem(&ogre);
 	eng->addSubsystem(&ois);
+	eng->addSubsystem(&bull);
+	eng->addSubsystem(&lua);
+	//eng->addSubsystem(&enet);
 
 	// initialize the engine
 	eng->init();
 
-	// add the testing state to the stack
-	eng->addState(new IH::MenuState());
+	// add game state
+	eng->addState(new IH::PlayState());
 
 	// start up the engine
 	eng->start();

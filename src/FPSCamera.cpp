@@ -29,6 +29,7 @@ namespace Oryx
 		:Object(),mPitch(0)
 	{
 		createSlot("look",this,&FPSCamera::look);
+		createSlot("move",this,&FPSCamera::autoMove);
 		createSignal("moved");
 
 		EventHandler::getDestination("OISSubsystem")->getSignal("mouseMoved")
@@ -58,6 +59,8 @@ namespace Oryx
 
 	void FPSCamera::update(Real delta)
 	{
+		if(mMotionLocked) return;
+
 		Vector3 motion = mCamera->getAbsoluteDirection()*20*delta*(mOIS->isKeyDown("KC_W")-mOIS->isKeyDown("KC_S"))
 			+mCamera->getAbsoluteRight()*20*delta*(mOIS->isKeyDown("KC_D")-mOIS->isKeyDown("KC_A"));
 
@@ -71,6 +74,7 @@ namespace Oryx
 
 	void FPSCamera::look(const Message& msg)
 	{
+		if(mLookLocked) return;
 		if(const MessageAny<Vector2>* ms = message_cast<Vector2>(msg))
 		{
 			mYawNode->yaw(ms->data.x*-0.5f);
@@ -95,5 +99,11 @@ namespace Oryx
 	Vector3 FPSCamera::getDirection()
 	{
 		return mCamera->getAbsoluteDirection();
+	}
+
+	void FPSCamera::autoMove(const Message& m)
+	{
+		if(const Vector3* move = unpackMsg<Vector3>(m))
+			mPosNode->setPosition(*move);
 	}
 }

@@ -25,8 +25,10 @@
 #include "OryxEngine.h"
 #include "ALSubsystem/ALSubsystem.h"
 #include "OISSubsystem/OISSubsystem.h"
-#include "ENetSubsystem/ENetSubsystem.h"
+//#include "ENetSubsystem/ENetSubsystem.h"
 #include "OgreSubsystem/OgreSubsystem.h"
+#include "LuaSubsystem/LuaSubsystem.h"
+#include "BulletSubsystem/BulletSubsystem.h"
 using namespace Oryx;
 
 #endif
