@@ -1,5 +1,9 @@
+#ifndef IH_OCEAN_H
+#define IH_OCEAN_H
+
 #include "IH.h"
 #include "OryxObject.h"
+#include "IHWaveManager.h"
 
 namespace IH
 {
@@ -10,15 +14,22 @@ namespace IH
 		Ocean();
 		virtual ~Ocean();
 
+		void update(Real delta);
+		void moved(const Message& m);
+
 	private:
 
 		MeshData mData;
 		Mesh* mMesh;
+		Mesh* mMesh_outer;
 
-		static const size_t VERTS_X = 15;
-		static const size_t VERTS_Y = 15;
-		static const Real SCALE_X = 100.f;
-		static const Real SCALE_Y = 100.f;
+		const static size_t VERTS_X = 100;
+		const static size_t VERTS_Y = 100;
+
+		Real mTimer;
+		WaveManager* mWaveMgr;
 
 	};
 }
+
+#endif

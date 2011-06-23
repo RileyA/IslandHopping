@@ -7,6 +7,7 @@
 namespace IH
 {
 	class Generator;
+	class WaveManager;
 
 	struct IslandSchematic
 	{
@@ -46,6 +47,7 @@ namespace IH
 		Vector3 mPosition;
 		Real bob;
 		Real bob_offset;
+		WaveManager* mWaves;
 
 		bool mActive;
 	};

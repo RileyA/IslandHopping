@@ -1,6 +1,7 @@
 #include "IHPlayer.h"
 #include "OryxMessageAny.h"
 #include "BulletSubsystem/CharPrimitive.h"
+#include "IHIsland.h"
 
 namespace IH
 {
@@ -54,16 +55,22 @@ namespace IH
 		Real ab = delta * mGravityFactor;
 		if(ab < 0.f)
 			ab *= -1;
-		//mController->translate(mController->move(Vector3(0,offset,0), ab, 2));
+		mController->translate(mController->move(Vector3(0,offset,0), ab, 2));
 		Real dist = mMove.normalize();
-		//mController->translate(mController->move(mMove, dist * delta, 5));
+		mController->translate(mController->move(mMove, dist * delta, 5));
 		
 		BulletSubsystem* b = dynamic_cast<BulletSubsystem*>(Engine::getPtr()->getSubsystem("BulletSubsystem"));
 		
 		// check if we're on solid ground now
-		mOnSolidGround = std::max(b->raycast(getPosition(),Vector3(0,-1,0),
-			0.375f*1.1f+0.75f*1.1f+0.4f,COLLISION_GROUP_3,COLLISION_GROUP_3).hit * 
+		RaycastReport rr = b->raycast(getPosition(),Vector3(0,-1,0),
+			0.375f*1.1f+0.75f*1.1f+0.4f,COLLISION_GROUP_3,COLLISION_GROUP_3);
+		mOnSolidGround = std::max(rr.hit * 
 			TimeManager::getPtr()->getTimeDecimal(), mOnSolidGround); 
+
+		if(rr.hit)
+		{
+			static_cast<Island*>(rr.userData)->score();
+		}
 
 		mInterpolation = mAccumulator / TIMESTEP;
 		mMove = Vector3::ZERO;
@@ -92,7 +99,6 @@ namespace IH
 	{
 		if(TimeManager::getPtr()->getTimeDecimal() < mOnSolidGround + 0.5f)
 		{
-			std::cout<<"JUMP!!!\n";
 			mGravityFactor = 10.f;
 			mJumping = true;
 		}

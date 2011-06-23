@@ -1,0 +1,59 @@
+void waterVP
+(
+	float4 position		: POSITION,
+	float4 normal		: NORMAL,
+
+	out float4 outPos			: POSITION,
+	out float2 outUV			: TEXCOORD0,
+	out float3 outNormal		: TEXCOORD1,
+	out float4 outReflect		: TEXCOORD2,
+
+	uniform float4x4 world,// world matrix transforms object->world space
+	uniform float4x4 worldViewProj,// plain ol' wvp matrix
+	uniform float3 eyePosW,//world space eye position
+	uniform float timeval//world space eye position
+)
+{
+	// get world space position of this vertex
+	float3 worldPos = mul(world, position).xyz;
+	// same o' same o'
+	outPos = mul(worldViewProj, position);
+	// world coords as texcoords
+	outUV = float2(worldPos.x + timeval * 0.5, worldPos.z + timeval * 0.2);
+	// no rotation is being done, so obj-space normals == world-space normals
+	outNormal = normalize(normal.xyz);
+
+	// incident vector
+	float3 I = worldPos - eyePosW;
+
+	outReflect.w = length(I);
+
+	// calculate reflection vect
+	outReflect.xyz = I/outReflect.w;//reflect(I, outNormal);
+}
+
+void waterFP
+(
+	float2 inUV				: TEXCOORD0,
+	float3 inNormal			: TEXCOORD1,
+	float4 inReflect		: TEXCOORD2,
+
+	uniform samplerCUBE refl : register(s0),
+	uniform sampler2D noise : register(s1),
+	out float4 result		: COLOR
+)
+{
+	float light = pow(dot(float3(0,1,0),inNormal),3);
+
+	float fog = 1 - saturate(inReflect.w/90.f);
+
+	float3 noiseNormal = (tex2D(noise, (inUV.xy / 5)).rgb - 0.5).rbg * 0.25;
+	inNormal += noiseNormal;
+	inNormal = normalize(inNormal);
+	
+	float fresnel = -0.1 + 1.8 * pow(1 + dot(inReflect, inNormal), 8);
+	float3 ref = reflect(inReflect,inNormal);
+	ref.y = abs(ref.y);
+	result = lerp(float4(0.4,0.5,0.9, 1), texCUBE(refl, ref), saturate(fresnel)*0.95) * light * fog;
+}
+

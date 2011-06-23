@@ -1,3 +1,26 @@
+vertex_program waterVP cg
+{
+	source water.cg
+	entry_point waterVP
+	profiles vs_1_1 arbvp1
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto world world_matrix
+		param_named_auto eyePosW camera_position
+		param_named_auto timeval time
+	}
+}
+
+fragment_program waterFP cg
+{
+	source water.cg
+	entry_point waterFP
+	profiles ps_1_1 arbfp1 fp20
+
+}
+
 material island_frame
 {
 	technique
@@ -8,6 +31,7 @@ material island_frame
 			{
 				colour_op_ex source1 src_manual src_current 0.3 0.3 0.3
 			}
+			fog_override true linear 0 0 0 0 30 90
 		}
 	}
 }
@@ -18,11 +42,133 @@ material island_color
 	{
 		pass
 		{
-			scene_blend add
-			depth_write off
+			//scene_blend add
+			//depth_write off
 			texture_unit
 			{
 				colour_op_ex source1 src_manual src_current 1 0 0
+			}
+			fog_override true linear 0 0 0 0 30 90
+		}
+	}
+}
+
+/*material MeinKraft
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				cubic_texture cloudy_noon.jpg combinedUVW
+				tex_address_mode clamp
+				env_map cubic_reflection
+			}
+		}
+	}
+}*/
+
+material MeinKraft
+{
+	technique
+	{
+		pass
+		{
+			//scene_blend alpha_blend
+			//depth_write off
+			vertex_program_ref waterVP
+			{
+
+			}
+
+			fragment_program_ref waterFP
+			{
+
+			}
+
+			//texture_unit
+			//{
+			//	texture water.png
+			//}
+			texture_unit
+			{
+				cubic_texture cloudy_noon.jpg combinedUVW
+				filtering none
+			}
+			texture_unit
+			{
+				// Perlin noise volume
+				texture waves2.dds
+				// min / mag filtering, no mip
+				filtering linear linear none
+				//scroll_anim 0 0.5
+				scroll_anim 0 1
+			}
+		}
+	}
+}
+
+/*material MeinKraft
+{
+	technique
+	{
+		pass
+		{
+			//polygon_mode wireframe
+			//scene_blend alpha_blend
+			//cull_hardware none
+			//cull_software none
+			//depth_write off
+			texture_unit
+			{
+				//scroll_anim 0 1
+				//filtering anisotropic
+				//max_anisotropy 16
+				texture water.png
+			}
+			fog_override true exp2 0.12 0.12 0.12 0.01  30 50
+		}
+	}
+}*/
+
+material MeinKrafta
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+		fog_override true linear 0 0 0.03 0.001 0 80
+			scene_blend add
+			depth_write off
+		    //diffuse 0 0 0.5 0
+			ambient 0.3 0.9 1 0.5
+           // lighting off
+		   cull_hardware none
+		   cull_software none
+		   texture_unit
+			{
+				texture water02.png
+				tex_address_mode wrap
+				////filtering trilinear
+				scroll_anim 0.2 0.2
+				rotate_anim 0.0001
+				scale 1.666 1.666
+				//wave_xform scale_x sine 1.0 0.2 0.0 5.0
+			}
+			texture_unit
+			{
+				texture water02.png
+				tex_address_mode wrap
+				////filtering trilinear
+				scroll_anim -0.05 0.1
+				rotate_anim 0.000001
+				scale 1.5 1.5
+				colour_op modulate
+				//wave_xform scale_x sine 1.0 0.2 0.0 5.0
 			}
 		}
 	}

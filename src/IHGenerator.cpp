@@ -11,7 +11,7 @@ namespace IH
 		createSlot("playerPos", this, &Generator::playerMoved);
 		if(!Engine::getPtr()->getBucket("Islands"))
 			Engine::getPtr()->createBucket("Islands")->setTemporary(true);
-		mIslandTypes.push_back(new IslandSchematic());
+		mIslandTypes.push_back(new IslandSchematic("mini_island.mesh",Colour(0.4f,0.8f,0.5f),0));
 	}
 	//-----------------------------------------------------------------------
 	
@@ -59,7 +59,6 @@ namespace IH
 			}
 			else if(mIslands[i]->mMesh->getPosition().z > position.z + mStepSize * 5)
 			{
-				std::cout<<"hiding one!\n";
 				mIslands[i]->hide();
 				mSpareIslands.push_back(mIslands[i]);
 				mIslands.erase(mIslands.begin()+i);
@@ -106,7 +105,6 @@ namespace IH
 				mIslands.push_back(mSpareIslands[i]);
 				mIslands.back()->respawn(pos, roll);
 				mSpareIslands.erase(mSpareIslands.begin() + i);
-				std::cout<<"REUSED ONE!!!\n";
 				return mIslands.back();
 			}
 		}

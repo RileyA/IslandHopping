@@ -19,19 +19,26 @@ namespace IH
 		mBullet->startSimulation();
 
 		mCamera = new FPSCamera();
-		mCamera->lockMotion();
+		//mCamera->unlockMotion();
 		mPlayer = new IHPlayer("Player");//new CharPrimitive(mBullet, Vector3(0,15,0), 0.375f*1.5f, 0.75f*1.5f);
 
-		mGfx->setBackgroundColor(Colour(0.12f,0.12f,0.12f));
+		mGfx->setBackgroundColor(Colour(0.f,0.f,0.f));
+
+		Ocean* oc = new Ocean();
 
 		Generator* g = new Generator(0, 10, 16.f);
 		g->init();
 		g->generate(5);
 
 		mPlayer->getSignal("moved")->addListener(g->getSlot("playerPos"));
-		mPlayer->getSignal("moved")->addListener(mCamera->getSlot("move"));
+		//mCamera->getSignal("moved")->addListener(g->getSlot("playerPos"));
+		mPlayer->getSignal("moved")->addListener(oc->getSlot("moved"));
+		//mCamera->getSignal("moved")->addListener(oc->getSlot("moved"));
 		createSignal("playerMove")->addListener(mPlayer->getSlot("move"));
 		createSignal("jump")->addListener(mPlayer->getSlot("jump"));
+		//
+		mPlayer->getSignal("moved")->addListener(mCamera->getSlot("move"));
+
 	}
 	//-----------------------------------------------------------------------
 	
@@ -41,7 +48,7 @@ namespace IH
 			sendMessage(MessageAny<String>("kill"),"Engine");
 		if(mInput->wasKeyPressed("KC_HOME"))
 			mInput->toggleMouseGrab();
-		if(mInput->wasKeyPressed("KC_SPACE"))
+		if(mInput->wasKeyPressed("KC_SPACE")||mInput->wasButtonPressed("MB_Left"))
 			getSignal("jump")->send(Vector3::ZERO);
 		Vector3 move =  mCamera->getDirection();
 		/*move += mCamera->getDirection() * (mInput->isKeyDown("KC_W")

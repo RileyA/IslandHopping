@@ -5,6 +5,7 @@
 #include "IHPlayer.h"
 #include "OryxGameState.h"
 #include "IHIsland.h"
+#include "IHOcean.h"
 #include "FPSCamera.h"
 
 namespace IH
