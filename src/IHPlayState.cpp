@@ -18,27 +18,26 @@ namespace IH
 		mInput->initInput(mGfx->getWindowHandle(), true);
 		mBullet->startSimulation();
 
-		mCamera = new FPSCamera();
-		//mCamera->unlockMotion();
-		mPlayer = new IHPlayer("Player");//new CharPrimitive(mBullet, Vector3(0,15,0), 0.375f*1.5f, 0.75f*1.5f);
-
 		mGfx->setBackgroundColor(Colour(0.f,0.f,0.f));
+		mGfx->getGUI()->setOverlayEnabled("HUD", true);
+		mGfx->getGUI()->loadFont("UI");
 
+		mCamera = new FPSCamera();
+		mCamera->lockMotion();
+		mPlayer = new IHPlayer("Player");
 		Ocean* oc = new Ocean();
-
 		Generator* g = new Generator(0, 10, 16.f);
 		g->init();
 		g->generate(5);
 
 		mPlayer->getSignal("moved")->addListener(g->getSlot("playerPos"));
-		//mCamera->getSignal("moved")->addListener(g->getSlot("playerPos"));
 		mPlayer->getSignal("moved")->addListener(oc->getSlot("moved"));
-		//mCamera->getSignal("moved")->addListener(oc->getSlot("moved"));
+		mPlayer->getSignal("moved")->addListener(mCamera->getSlot("move"));
 		createSignal("playerMove")->addListener(mPlayer->getSlot("move"));
 		createSignal("jump")->addListener(mPlayer->getSlot("jump"));
-		//
-		mPlayer->getSignal("moved")->addListener(mCamera->getSlot("move"));
 
+		//mCamera->getSignal("moved")->addListener(g->getSlot("playerPos"));
+		//mCamera->getSignal("moved")->addListener(oc->getSlot("moved"));
 	}
 	//-----------------------------------------------------------------------
 	
@@ -50,6 +49,8 @@ namespace IH
 			mInput->toggleMouseGrab();
 		if(mInput->wasKeyPressed("KC_SPACE")||mInput->wasButtonPressed("MB_Left"))
 			getSignal("jump")->send(Vector3::ZERO);
+		if(mInput->wasButtonPressed("MB_Right"))
+			mGfx->takeScreenshot();
 		Vector3 move =  mCamera->getDirection();
 		/*move += mCamera->getDirection() * (mInput->isKeyDown("KC_W")
 			- mInput->isKeyDown("KC_S"));
@@ -63,18 +64,13 @@ namespace IH
 		move *= 17;
 		getSignal("playerMove")->send(move);
 		//mCamera->mPosNode->setPosition(mPlayer->getPosition());
+		
+		mGfx->getGUI()->setOverlayText("TimeText",String("Time:") + TimeManager::getPtr()->getTimestampMilli());
+		mGfx->getGUI()->setOverlayText("DistanceText","Distance:"+StringUtils::toString(-static_cast<int>(mPlayer->getPosition().z)));
 	}
 	//-----------------------------------------------------------------------
 	
 	void PlayState::deinit()
 	{
-		for(int i=0;i<mIslandTypes.size();++i)
-			delete mIslandTypes[i];
-		mIslandTypes.clear();
-
-		for(int i=0;i<mIslands.size();++i)
-			delete mIslands[i];
-		mIslands.clear();
 	}
-	//-----------------------------------------------------------------------
 }

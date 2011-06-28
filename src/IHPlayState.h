@@ -22,9 +22,6 @@ namespace IH
 
 	private:
 	
-		std::vector<IslandSchematic*> mIslandTypes;
-		std::vector<Island*> mIslands;
-
 		FPSCamera* mCamera;
 
 		OgreSubsystem* mGfx;

@@ -23,7 +23,8 @@ namespace IH
 		virtual void generate(int step);
 
 		void playerMoved(const Message& position);
-		Island* makeIsland(IslandSchematic* type, Vector3 pos, Real roll = 0.f);
+		Island* makeIsland(String mesh, size_t id, Vector3 pos, Real roll = 0.f);
+		Colour getIdColor(size_t id){return mIslandIds[id];}
 
 	protected:
 
@@ -39,12 +40,14 @@ namespace IH
 		std::vector<Island*> mIslands;
 		std::vector<Island*> mSpareIslands;
 
-		// type of individual islands
-		std::vector<IslandSchematic*> mIslandTypes;
-		
 		// types of groups of islands
 		std::vector<IslandGrouping*> mIslandGroupings;
 
+		// island meshes available
+		std::vector<String> mMeshes;
+
+		// id -> color mapping
+		std::map<size_t, Colour> mIslandIds;
 	};
 }
 

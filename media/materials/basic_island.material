@@ -18,7 +18,6 @@ fragment_program waterFP cg
 	source water.cg
 	entry_point waterFP
 	profiles ps_1_1 arbfp1 fp20
-
 }
 
 material island_frame
@@ -29,9 +28,24 @@ material island_frame
 		{
 			texture_unit
 			{
-				colour_op_ex source1 src_manual src_current 0.3 0.3 0.3
+				colour_op_ex source1 src_manual src_current 0.25 0.25 0.25
 			}
 			fog_override true linear 0 0 0 0 30 90
+		}
+	}
+}
+
+material IHLogo
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			texture_unit
+			{
+				texture IH.png
+			}
 		}
 	}
 }
@@ -53,32 +67,12 @@ material island_color
 	}
 }
 
-/*material MeinKraft
-{
-	technique
-	{
-		pass
-		{
-			lighting off
-
-			texture_unit
-			{
-				cubic_texture cloudy_noon.jpg combinedUVW
-				tex_address_mode clamp
-				env_map cubic_reflection
-			}
-		}
-	}
-}*/
-
 material MeinKraft
 {
 	technique
 	{
 		pass
 		{
-			//scene_blend alpha_blend
-			//depth_write off
 			vertex_program_ref waterVP
 			{
 
