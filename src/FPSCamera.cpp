@@ -80,9 +80,9 @@ namespace Oryx
 		if(mLookLocked) return;
 		if(const MessageAny<Vector2>* ms = message_cast<Vector2>(msg))
 		{
-			mYawNode->yaw(ms->data.x*-0.5f);
+			mYawNode->yaw(ms->data.x*-0.35f);
 
-			Real tryPitch = ms->data.y*-0.5f;
+			Real tryPitch = ms->data.y*-0.35f;
 			Real actualPitch = tryPitch;
 
 			if(mPitch + tryPitch > 80.f)

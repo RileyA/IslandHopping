@@ -1,5 +1,5 @@
 import os
-source = ['IH.cpp','IHMenuState.cpp','IHPlayState.cpp','IHGenerator.cpp','IHIsland.cpp','FPSCamera.cpp','IHIslandGrouping.cpp', 'IHPlayer.cpp','IHOcean.cpp','IHWaveManager.cpp']
+source = ['IH.cpp','IHMenuState.cpp','IHPlayState.cpp','IHGenerator.cpp','IHIsland.cpp','FPSCamera.cpp','IHIslandGrouping.cpp', 'IHPlayer.cpp','IHOcean.cpp','IHWaveManager.cpp','IHScoreHandler.cpp','IHLobbyState.cpp']
 if os.name == 'nt':
 	env = Environment(ENV=os.environ,tools=['mingw','g++'],CXX=['g++'],CPPDEFINES=['WIN32'])
 	env['ENV']['LD_RUN_PATH']='.'
@@ -7,4 +7,4 @@ if os.name == 'nt':
 else:
 	env = Environment();
 	env['ENV']['LD_RUN_PATH']='.'
-	env.Program('IslandHopping',source,CPPPATH=['../../OryxEngine/src'],LIBS=['OryxEngine','ALSubsystem','OgreSubsystem','LuaSubsystem','OISSubsystem','ENetSubsystem','BulletSubsystem'])
+	env.Program('IslandHopping',source,CPPPATH=['../../OryxEngine/src', '../../Oyster/include'],LIBS=['OryxEngine','ALSubsystem','OgreSubsystem','LuaSubsystem','OISSubsystem','ENetSubsystem','BulletSubsystem'])

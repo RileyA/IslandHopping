@@ -17,7 +17,7 @@ namespace IH
 	void WaveManager::update(Real delta)
 	{
 		// advances waves, etc
-		for(int i = 0; i < mWaves.size(); ++i)
+		/*for(int i = 0; i < mWaves.size(); ++i)
 		{
 			Vector2 d = mWaves[i].pos;
 			d.normalize();
@@ -43,7 +43,7 @@ namespace IH
 				Rand::get().genFloat(8.f,16.f),
 				Rand::get().genFloat(0.4f,3.0f));
 			mTimer = Rand::get().genFloat(1.5f,2.5f);
-		}
+		}// */
 	}
 
 	void WaveManager::playerMoved(const Message& m)

@@ -45,7 +45,9 @@ void waterFP
 {
 	float light = pow(dot(float3(0,1,0),inNormal),3);
 
-	float fog = 1 - saturate(inReflect.w/90.f);
+	float fog = 1 - saturate(inReflect.w/60.f);
+
+	float alpha = 1 + inReflect.w / 34 - (inNormal.y-0.8) * 2;
 
 	float3 noiseNormal = (tex2D(noise, (inUV.xy / 5)).rgb - 0.5).rbg * 0.25;
 	inNormal += noiseNormal;
@@ -55,5 +57,7 @@ void waterFP
 	float3 ref = reflect(inReflect,inNormal);
 	ref.y = abs(ref.y);
 	result = lerp(float4(0.4,0.5,0.9, 1), texCUBE(refl, ref), saturate(fresnel)*0.95) * light * fog;
+	result.w = alpha * 1.05;//1 + inReflect.w / 80 - (inNormal.y-0.8) * 2;
+	//result.a = fresnel;
 }
 

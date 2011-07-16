@@ -22,6 +22,7 @@ namespace IH
 		MeshData mData;
 		Mesh* mMesh;
 		Mesh* mMesh_outer;
+		Mesh* mFloor;
 
 		const static size_t VERTS_X = 100;
 		const static size_t VERTS_Y = 100;

@@ -33,6 +33,10 @@ namespace IH
 		bool mJumping;
 		Real mOnSolidGround;
 
+		Real mSpeed;
+
+		unsigned int mExtraJumps;
+
 	};
 }
 

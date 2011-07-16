@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	eng->init();
 
 	// add game state
-	eng->addState(new IH::PlayState());
+	eng->addState(new IH::MenuState());
 
 	// start up the engine
 	eng->start();

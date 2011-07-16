@@ -27,7 +27,7 @@ namespace IH
 			{
 				Vector3 vpos;
 				vpos.x = startX + stepX * i;
-				vpos.y = -2.25f;//Rand::get().genFloat(-2.25,-3.f);
+				vpos.y = -3.1f;//Rand::get().genFloat(-2.25,-3.f);
 				vpos.z = startY + stepY * j;
 
 				mData.vertices.push_back(vpos.x);
@@ -58,13 +58,18 @@ namespace IH
 		mMesh = ogre->createMesh(mData);
 		ogre->getRootSceneNode()->addChild(mMesh);
 		mMesh_outer = ogre->createMesh("ocean_outer.mesh");
+		mFloor = ogre->createMesh("Oceanfloor.mesh");
+		mFloor->setPosition(Vector3(0,-4.75f,0));
 		mMesh->addChild(mMesh_outer);
+		mMesh->addChild(mFloor);
 		mMesh_outer->setPosition(Vector3(0.f,0.f,0.f));
 	}
 
 	Ocean::~Ocean()
 	{
-
+		OgreSubsystem* ogre =Engine::getPtr()->getSubsystem("OgreSubsystem")->castType<OgreSubsystem>(); 
+		ogre->destroySceneNode(mMesh_outer);
+		ogre->destroySceneNode(mMesh);
 	}
 
 	void Ocean::update(Real delta)
@@ -103,6 +108,8 @@ namespace IH
 			nw.x = 0;
 			nw.z = floor(nw.z);
 			mMesh->setPosition(nw);
+
+
 			//update(0.f);
 		}
 	}

@@ -6,19 +6,64 @@ namespace IH
 {
 	Generator::Generator(unsigned int mSeed, int steps, Real stepSize)
 		:Object(),mStepSize(stepSize),mGenerateSteps(steps),mOffset(0.f),mRand(mSeed),
-			mGeneratedTo(0)
+			mGeneratedTo(2),mWeightTotal(0)
 	{
 		createSlot("playerPos", this, &Generator::playerMoved);
 		if(!Engine::getPtr()->getBucket("Islands"))
 			Engine::getPtr()->createBucket("Islands")->setTemporary(true);
 		//mIslandTypes.push_back(new IslandSchematic("mini_island.mesh",Colour(0.4f,0.8f,0.5f),0));
-		mMeshes.push_back("mini_island.mesh");
-		mMeshes.push_back("standard_island.mesh");
-		mMeshes.push_back("big_island.mesh");
-		mMeshes.push_back("long_island.mesh");
-		mIslandIds[0] = Colour(0.4f,0.8f,0.5f);
-		mIslandIds[1] = Colour(0.8f,0.3f,0.4f);
-		mIslandIds[2] = Colour(0.4f,0.4f,0.4f);
+
+		std::ifstream file;
+		file.open("IslandGroups.ih");
+
+		if(file.is_open())
+		{	
+			unsigned int weight;
+			while(file.good())
+			{
+				file >> weight;
+				if(file.good()) 
+				{
+					mIslandGroupings.insert(IslandGrouping(weight, file));
+					mWeightTotal += weight;
+				}
+			}
+			file.close();
+		}
+
+		std::ifstream meshfile;
+		meshfile.open("Islands.ih");
+		if(meshfile.is_open())
+		{
+			String temp;
+			while(meshfile.good())
+			{
+				meshfile >> temp;
+				mMeshes.push_back(temp);
+			}
+			meshfile.close();
+		}
+
+		std::ifstream cfile;
+		cfile.open("IslandColors.ih");
+		if(cfile.is_open())
+		{
+			unsigned int id;
+			Colour c;
+			while(cfile.good())
+			{
+				cfile >> id;
+				cfile >> c.r;
+				cfile >> c.g;
+				cfile >> c.b;
+				mIslandIds[id] = c;
+			}
+			meshfile.close();
+		}
+
+		// make a start island
+		makeIsland("runway_island.mesh", 2000, Vector3(0,-2.125,0), 0.f);
+		//generateTo(Vector3(0,0,-60));
 	}
 	//-----------------------------------------------------------------------
 	
@@ -38,8 +83,6 @@ namespace IH
 		// islands are Oryx::Objects, so they get deleted by the engine
 		mIslands.clear();
 		mSpareIslands.clear();
-		for(int i = 0; i < mIslandGroupings.size(); ++i)
-			delete mIslandGroupings[i];
 		mIslandGroupings.clear();
 	}
 	//-----------------------------------------------------------------------
@@ -80,13 +123,10 @@ namespace IH
 		while(dist > mGeneratedTo)
 		{
 			// make some islands!
-			makeIsland(mMeshes[mRand.gen(0,mMeshes.size()-1)], mRand.gen(0,2), Vector3(mRand.genFloat(-5,5)
-				,-2,-mStepSize * mGeneratedTo - mOffset));
-			makeIsland(mMeshes[mRand.gen(0,mMeshes.size()-1)], mRand.gen(0,2), Vector3(mRand.genFloat(-10,-20)
-				,-2,-mStepSize * mGeneratedTo - mOffset));
-			makeIsland(mMeshes[mRand.gen(0,mMeshes.size()-1)], mRand.gen(0,2), Vector3(mRand.genFloat(10,20)
-				,-2,-mStepSize * mGeneratedTo - mOffset));
-			//mOffset += 1 * mGeneratedTo;
+			makeIslandGrouping(Vector3(0,-2.125,-mStepSize * mGeneratedTo - mOffset));
+			makeIslandGrouping(Vector3(-10,-2.125,-mStepSize * mGeneratedTo - mOffset));
+			makeIslandGrouping(Vector3(10,-2.125,-mStepSize * mGeneratedTo - mOffset));
+			//mOffset += 1 * mGeneratedTo * 0.5f;
 			++mGeneratedTo;
 		}
 	}
@@ -117,6 +157,33 @@ namespace IH
 
 		mIslands.push_back(new Island(mesh, id, pos, roll, mRand.gen(), this));
 		return mIslands.back();
+	}
+	//-----------------------------------------------------------------------
+
+	void Generator::makeIslandGrouping(Vector3 pos)
+	{
+		long long seed = mRand.gen(0,mWeightTotal-1);
+		IslandGrouping* group = 0;
+		for(std::multiset<IslandGrouping>::iterator it = mIslandGroupings.begin(); 
+			it != mIslandGroupings.end(); ++it)
+		{
+			if((*it).weight >= seed)
+			{
+				group = const_cast<IslandGrouping*>(&(*it));// yucks
+				break;
+			}
+			seed -= (*it).weight;
+		}
+
+		if(!group)
+			return;
+
+		// now actually create it
+		for(int i = 0; i < group->meshes.size(); ++i)
+		{
+			makeIsland(mMeshes[group->meshes[i]], mRand.gen(0,2), pos + group->positions[i] +
+				Vector3(mRand.genFloat(group->deviances[i].x), mRand.genFloat(-0.05f,-0.3f), mRand.genFloat(group->deviances[i].z)));
+		}
 	}
 	//-----------------------------------------------------------------------
 }

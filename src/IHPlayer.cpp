@@ -12,13 +12,14 @@ namespace IH
 		createSlot("jump", this, &IHPlayer::jump);
 		createSignal("moved");
 		mController = new CharPrimitive(dynamic_cast<BulletSubsystem*>(Engine::getPtr()->getSubsystem("BulletSubsystem"))
-			,Vector3(0,2,0), 0.375f*1.1f, 0.75f*1.1f);
+			,Vector3(0,-0.8,0), 1.15f, 0.3f);
 		mAccumulator = 0.f;
 		mInterpolation = 0.f;
 		mPositionLast = Vector3(0,2,0);
-		mJumping = false;
 		mGravityFactor = -2.f;
 		mOnSolidGround = false;
+		mExtraJumps = 0;
+		mSpeed = 18.f;
 	}
 	//-----------------------------------------------------------------------
 	
@@ -47,36 +48,44 @@ namespace IH
 			}
 		}*/
 
-
 		if(mGravityFactor > -2.f)
-			mGravityFactor -= delta * 7;
+		{
+			mGravityFactor -= delta * 20;
+		}
 
 		Real offset = mGravityFactor < 0.f ? -1.f : 1.f;
 		Real ab = delta * mGravityFactor;
+		ab *= mGravityFactor > 0.f ? 1.f : 2.f;
+		if(mGravityFactor < 0.f && TimeManager::getPtr()->getTimeDecimal() < mOnSolidGround + 0.25f)
+			ab *= 0.175f;
 		if(ab < 0.f)
 			ab *= -1;
 		mController->translate(mController->move(Vector3(0,offset,0), ab, 2));
 		Real dist = mMove.normalize();
-		mController->translate(mController->move(mMove, dist * delta, 5));
+		mController->translate(mController->move(mMove * mSpeed, dist * delta, 5));
 		
 		BulletSubsystem* b = dynamic_cast<BulletSubsystem*>(Engine::getPtr()->getSubsystem("BulletSubsystem"));
 		
 		// check if we're on solid ground now
 		RaycastReport rr = b->raycast(getPosition(),Vector3(0,-1,0),
-			0.375f*1.1f+0.75f*1.1f+0.4f,COLLISION_GROUP_3,COLLISION_GROUP_3);
+			1.7f,COLLISION_GROUP_3,COLLISION_GROUP_3);
 		mOnSolidGround = std::max(rr.hit * 
 			TimeManager::getPtr()->getTimeDecimal(), mOnSolidGround); 
 
-		if(rr.hit)
+		if(rr.hit && mGravityFactor < 5.f)
 		{
 			static_cast<Island*>(rr.userData)->score();
+			mExtraJumps = 1;
+			// auto jump experiment: 
+			//mGravityFactor = 13.5f;
+			//mOnSolidGround = 0.f;
 		}
 
 		mInterpolation = mAccumulator / TIMESTEP;
 		mMove = Vector3::ZERO;
 
 		Vector3 movement = getPosition();
-		getSignal("moved")->send(movement);
+		getSignal("moved")->send(movement+Vector3(0,-0.45f,-0.3f));
 	}
 	//-----------------------------------------------------------------------
 	
@@ -97,10 +106,22 @@ namespace IH
 	
 	void IHPlayer::jump(const Message& j)
 	{
-		if(TimeManager::getPtr()->getTimeDecimal() < mOnSolidGround + 0.5f)
+		if(mGravityFactor < 11.f && TimeManager::getPtr()->getTimeDecimal() < mOnSolidGround + 0.5f)
 		{
-			mGravityFactor = 10.f;
-			mJumping = true;
+			mGravityFactor = std::min(mSpeed * 1.25f, 13.5f);
+			mOnSolidGround = 0.f;
+			dynamic_cast<ALSubsystem*>(Engine::getPtr()->getSubsystem("ALSubsystem"))->play2D(
+				"../media/audio/jump_01.wav");
+		}
+		else if(mExtraJumps > 0)
+		{
+			--mExtraJumps;
+			if(mGravityFactor < 7.5f)
+				mGravityFactor = std::min(mSpeed, 11.f);
+			else
+				mGravityFactor+=2.5f;
+			dynamic_cast<ALSubsystem*>(Engine::getPtr()->getSubsystem("ALSubsystem"))->play2D(
+				"../media/audio/jump_01.wav");
 		}
 	}
 }

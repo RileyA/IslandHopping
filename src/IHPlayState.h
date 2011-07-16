@@ -31,6 +31,7 @@ namespace IH
 		BulletSubsystem* mBullet;
 
 		IHPlayer* mPlayer;
+		Real mJumpTimeout;
 
 	};
 }

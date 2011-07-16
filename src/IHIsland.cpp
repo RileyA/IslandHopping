@@ -16,7 +16,16 @@ namespace IH
 
 		for(int i=0;i<2;++i)
 			mMesh->setMaterialName(mMesh->getMaterial(i).cloneMe(),i);
-		mMesh->getMaterial(1).setTexture(0,mParent->getIdColor(id));
+		if(id == 2000)
+		{
+			mMesh->getMaterial(1).setTexture(0, Colour(0.4,0.5,0.9));
+			mScored = true;
+		}
+		else
+		{
+			mMesh->getMaterial(1).setTexture(0,mParent->getIdColor(id));
+			mScored = false;
+		}
 		ogre->getRootSceneNode()->addChild(mMesh);
 		
 		if(PhysicsShape* cached = bullet->getShape(mMeshName))
@@ -35,7 +44,7 @@ namespace IH
 		bob_offset = mGen.genFloat(0.1f,2.f);
 		mCollide->setUserData(this);
 		mActive = true;
-		mScored = false;
+		createSignal("Scored")->addListener(Engine::getPtr()->getObject("ScoreHandler")->getSlot("scored"));
 	}
 	//-----------------------------------------------------------------------
 	
@@ -53,9 +62,8 @@ namespace IH
 			Vector3 normal = Vector3(0,0.45f,0);
 			Real disp = mWaves->getDisplacement(Vector2(mPosition.x,mPosition.z),normal);
 			normal.normalize();
-			mMesh->setPosition(mPosition + Vector3(0,1,0) * sin(TimeManager::getPtr()->getTimeDecimal()*1.25f+bob_offset)
-				* bob + Vector3(0,disp-0.75f,0));
-			if(normal == Vector3::UNIT_Y)
+			mMesh->setPosition(mPosition + Vector3(0,disp-0.75f,0));
+			if(normal.angleBetween(Vector3::UNIT_Y) < 0.5f)
 				mMesh->setOrientation(Quaternion::IDENTITY);
 			else
 				mMesh->setOrientation(Vector3::UNIT_Y.getRotationTo(normal) * Quaternion::IDENTITY);
@@ -71,16 +79,9 @@ namespace IH
 		// do some scoring stuff here
 		if(mActive && !mScored)
 		{
+			getSignal("Scored")->send(mId);
 			mScored = true;
-			String fx = "../media/audio/hit_green.wav";
-			if(mId == 1)
-				fx = "../media/audio/hit_01.wav";
-			else if(mId == 2)
-				fx = "../media/audio/hit_grey.wav";
-
-			dynamic_cast<ALSubsystem*>(Engine::getPtr()->getSubsystem("ALSubsystem"))->play2D(fx);
 			mMesh->getMaterial(1).setTexture(0, Colour(0.4,0.5,0.9));
-			//hide();
 		}
 	}
 	//-----------------------------------------------------------------------
